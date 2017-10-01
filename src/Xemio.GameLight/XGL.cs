@@ -11,6 +11,7 @@ namespace Xemio.GameLight
 {
     public static class XGL
     {
+        private static Form _form;
         private static IList<IComponent> _components;
 
         public static T Get<T>() where T : IComponent
@@ -18,26 +19,34 @@ namespace Xemio.GameLight
             return _components.OfType<T>().FirstOrDefault();
         }
 
-        public static bool IsConfigured { get; private set; }
+        public static bool IsConfigured => _form != null;
 
-        public static void Initialize(Action<XGLConfiguration> configurationAction)
+        public static void Run(Action<XGLConfiguration> configurationAction)
         {
             var configuration = new XGLConfiguration();
             configurationAction(configuration);
-            Initialize(configuration);
+            Run(configuration);
         }
 
-        public static void Initialize(XGLConfiguration configuration)
+        public static void Run(XGLConfiguration configuration)
         {
             if (IsConfigured)
                 return;
             
             configuration.Validate();
 
+            _form = new Form
+            {
+                Width = configuration.BackBuffer.Width,
+                Height = configuration.BackBuffer.Height,
+                FormBorderStyle = FormBorderStyle.FixedSingle,
+                Text = configuration.Title,
+                ShowIcon = false
+            };
+
             var gameLoop = new GameLoop(configuration.FramesPerSecond);
-            var renderManager = new RenderManager(configuration.Control, configuration.BackBuffer);
+            var renderManager = new RenderManager(_form, configuration.BackBuffer, configuration.DefaultColor);
             var sceneManager = new SceneManager();
-            sceneManager.CurrentScene = configuration.StartScene;
 
             gameLoop.Subscribe(sceneManager);
             gameLoop.Subscribe(renderManager);
@@ -50,9 +59,11 @@ namespace Xemio.GameLight
                 sceneManager
             };
 
+            sceneManager.CurrentScene = configuration.StartScene;
+
             gameLoop.Run();
 
-            IsConfigured = true;
+            Application.Run(_form);
         }
     }
 
@@ -60,14 +71,14 @@ namespace Xemio.GameLight
     {
         public int FramesPerSecond { get; set; }
         public Size BackBuffer { get; set; }
-        public Control Control { get; set; }
         public Scene StartScene { get; set; }
+        public Color DefaultColor { get; set; }
+        public string Title { get; set; }
 
         public void Validate()
         {
-            if (this.Control == null)
+            if (this.FramesPerSecond <= 0)
                 throw new Exception();
-
             if (this.StartScene == null)
                 throw new Exception();
         }

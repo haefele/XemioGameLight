@@ -16,47 +16,62 @@ namespace Xemio.GameLight.Tests.Bums
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-
-            var form = new Form
+            XGL.Run(f =>
             {
-                Width = 1280,
-                Height = 720,
-                FormBorderStyle = FormBorderStyle.FixedSingle
-            };
-
-            XGL.Initialize(f =>
-            {
-                f.Control = form;
                 f.BackBuffer = new Size(1280, 720);
                 f.FramesPerSecond = 60;
                 f.StartScene = new TestScene();
+                f.Title = "Test-Game";
+                f.DefaultColor = Color.CornflowerBlue;
             });
-
-            Application.Run(form);
         }
     }
 
     public class TestScene : Scene
     {
-        private int _x = 0;
+        private PointF _lineStartPoint;
+        private PointF _lineEndPoint;
+        private Pen _linePen;
+
+        private Font _font;
+        private string _message;
+        private SolidBrush _messageBrush;
+        private PointF _messageLocation;
+
+        public override void LoadContent()
+        {
+            base.LoadContent();
+
+            this._lineStartPoint = new PointF(0, 0);
+            this._lineEndPoint = new PointF(0, this.GraphicsDevice.Height);
+            this._linePen = new Pen(Color.Green);
+
+            this._font = new Font("Arial", 40);
+            this._message = "Hallo Welt";
+            this._messageBrush = new SolidBrush(Color.White);
+        }
 
         public override void Tick(double elapsed)
         {
             base.Tick(elapsed);
 
-            this._x++;
+            float newX = this._lineStartPoint.X + 1;
+            if (newX > this.GraphicsDevice.Width)
+                newX = 0;
 
-            if (this._x > this.GraphicsDevice.Width)
-                this._x = 0;
+            this._lineStartPoint = new PointF(newX, this._lineStartPoint.Y);
+            this._lineEndPoint = new PointF(newX, this._lineEndPoint.Y);
+
+            SizeF messageSize = this.GraphicsDevice.MeasureString(this._message, this._font);
+            this._messageLocation = new PointF(this.GraphicsDevice.Width / 2f - messageSize.Width / 2, this.GraphicsDevice.Height / 2f - messageSize.Height / 2);
         }
 
         public override void Render()
         {
             base.Render();
-
-            this.GraphicsDevice.BackBuffer.DrawLine(new Pen(Color.Green), this._x, 0, this._x, this.GraphicsDevice.Height);
+            
+            this.GraphicsDevice.DrawLine(this._linePen, this._lineStartPoint, this._lineEndPoint);
+            this.GraphicsDevice.DrawString(this._message, this._font, this._messageBrush, this._messageLocation);
         }
     }
 }

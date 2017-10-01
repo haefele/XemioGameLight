@@ -10,19 +10,23 @@ namespace Xemio.GameLight.Rendering
     {
         private readonly Control _control;
 
-        public RenderManager(Control control, Size backBufferSize)
+        public RenderManager(Control control, Size backBufferSize, Color defaultColor)
         {
             this._control = control;
 
-            this.GraphicsDevice = new GraphicsDevice(backBufferSize.Width, backBufferSize.Height);
+            this.GraphicsDevice = new GraphicsDevice(backBufferSize.Width, backBufferSize.Height, defaultColor);
         }
 
         public GraphicsDevice GraphicsDevice { get; }
+        
+        public void Tick(double elapsed)
+        {
+        }
 
-        public void Present()
+        public void Render()
         {
             Graphics graphics = this._control.CreateGraphics();
-            
+
             IntPtr hdc = graphics.GetHdc();
             IntPtr dc = Gdi.CreateCompatibleDC(hdc);
             IntPtr buffer = this.GraphicsDevice.Bitmap.GetHbitmap();
@@ -47,15 +51,6 @@ namespace Xemio.GameLight.Rendering
             graphics.ReleaseHdc(hdc);
 
             this.GraphicsDevice.Clear();
-        }
-
-        public void Tick(double elapsed)
-        {
-        }
-
-        public void Render()
-        {
-            this.Present();
         }
     }
 }
