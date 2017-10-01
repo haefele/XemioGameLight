@@ -16,6 +16,7 @@ namespace Xemio.GameLight.Game
 
                 this._currentScene?.OnLeave();
                 this._currentScene = value;
+                this._currentScene?.LoadContentIfNeeded();
                 this._currentScene?.OnEnter();
             }
         }

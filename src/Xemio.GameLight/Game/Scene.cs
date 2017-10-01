@@ -6,6 +6,23 @@ namespace Xemio.GameLight.Game
     {
         public GraphicsDevice GraphicsDevice => XGL.Get<GraphicsDevice>();
 
+        public bool IsContentLoaded { get; private set; }
+
+        internal void LoadContentIfNeeded()
+        {
+            if (this.IsContentLoaded)
+                return;
+
+            this.LoadContent();
+
+            this.IsContentLoaded = true;
+        }
+
+        public virtual void LoadContent()
+        {
+            
+        }
+
         public virtual void OnEnter()
         {
             
