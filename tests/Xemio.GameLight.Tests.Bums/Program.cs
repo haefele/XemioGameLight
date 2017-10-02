@@ -37,6 +37,7 @@ namespace Xemio.GameLight.Tests.Bums
         private string _message;
         private SolidBrush _messageBrush;
         private PointF _messageLocation;
+        private double _elapsed;
 
         public override void LoadContent()
         {
@@ -55,6 +56,8 @@ namespace Xemio.GameLight.Tests.Bums
         {
             base.Tick(elapsed);
 
+            this._elapsed = elapsed;
+
             float newX = this._lineStartPoint.X + 1;
             if (newX > this.GraphicsDevice.Width)
                 newX = 0;
@@ -71,6 +74,8 @@ namespace Xemio.GameLight.Tests.Bums
             base.Render();
             
             this.GraphicsDevice.DrawLine(this._linePen, this._lineStartPoint, this._lineEndPoint);
+
+            this.GraphicsDevice.DrawString(this._elapsed.ToString(), this._font, this._messageBrush, new PointF(0, 0));
             this.GraphicsDevice.DrawString(this._message, this._font, this._messageBrush, this._messageLocation);
         }
     }

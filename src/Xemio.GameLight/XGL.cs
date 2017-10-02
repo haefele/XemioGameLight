@@ -61,7 +61,7 @@ namespace Xemio.GameLight
 
             sceneManager.CurrentScene = configuration.StartScene;
 
-            gameLoop.Run();
+            gameLoop.Start();
 
             Application.Run(_form);
         }

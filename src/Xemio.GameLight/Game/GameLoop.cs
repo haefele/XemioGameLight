@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using Xemio.GameLight.Components;
 using Timer = System.Threading.Timer;
 
@@ -13,37 +16,73 @@ namespace Xemio.GameLight.Game
 
     public class GameLoop : IComponent
     {
-        private Timer _timer;
-        private List<IGameLoopSubscriber> _subscribers;
+        private readonly List<IGameLoopSubscriber> _subscribers;
+
+        private CancellationTokenSource _tokenSource;
+        private Task _task;
 
         public int FramesPerSecond { get; }
+        public bool IsStarted => this._task != null;
 
         public GameLoop(int framesPerSecond)
         {
             this._subscribers = new List<IGameLoopSubscriber>();
             this.FramesPerSecond = framesPerSecond;
-
-            this._timer = new Timer(this.Callback, null, TimeSpan.FromMilliseconds(-1), TimeSpan.Zero);
         }
 
-        public void Run()
+        public void Start()
         {
-            this._timer.Change(TimeSpan.Zero, TimeSpan.FromMilliseconds(1000.0 / this.FramesPerSecond));
+            if (this.IsStarted)
+                return;
+
+            this._tokenSource = new CancellationTokenSource();
+            this._task = Task.Factory.StartNew(this.Loop, this._tokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
-        private void Callback(object state)
+        public void Stop()
         {
-            foreach (var subscriber in this._subscribers)
-            {
-                subscriber.Tick(0);
-            }
+            if (this.IsStarted == false)
+                return;
 
-            foreach (var subscriber in this._subscribers)
+            this._tokenSource.Cancel();
+            this._task.Wait();
+
+            this._tokenSource = null;
+            this._task = null;
+        }
+        
+        private void Loop()
+        {
+            TimeSpan previousElapsed = TimeSpan.Zero;
+            var watch = Stopwatch.StartNew();
+
+            while (this._tokenSource.IsCancellationRequested == false)
             {
-                subscriber.Render();
+                SpinWait.SpinUntil(() => this.NextTickRequested(watch, previousElapsed));
+
+                var elapsed = watch.Elapsed;
+                var elapsedSinceLastTick = elapsed - previousElapsed;
+
+                foreach (var subscriber in this._subscribers)
+                {
+                    subscriber.Tick(elapsedSinceLastTick.TotalSeconds);
+                }
+
+                foreach (var subscriber in this._subscribers)
+                {
+                    subscriber.Render();
+                }
+
+                previousElapsed = elapsed;
             }
         }
 
+        private bool NextTickRequested(Stopwatch watch, TimeSpan previousElapsed)
+        {
+            double millisecondsPerFrame = 1000.0 / this.FramesPerSecond * 0.985; //Tolerance
+            return (watch.Elapsed - previousElapsed).TotalMilliseconds > millisecondsPerFrame;
+        }
+        
         public void Subscribe(IGameLoopSubscriber subscriber)
         {
             this._subscribers.Add(subscriber);
