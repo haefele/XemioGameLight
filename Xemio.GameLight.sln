@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{545F893D-3465-4084-B634-C2773B32B0F2}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D6B61568-23BF-4FCA-9A04-7EC863213EC0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xemio.GameLight.Tests.Bums", "tests\Xemio.GameLight.Tests.Bums\Xemio.GameLight.Tests.Bums.csproj", "{5AF6816F-0799-429C-8FCD-7C8DB079ECAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xemio.GameLight.Tests.WpfEmbedded", "Xemio.GameLight.Tests.WpfEmbedded\Xemio.GameLight.Tests.WpfEmbedded.csproj", "{A0F5F440-8E90-48B4-A9D4-0262A84F63C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +27,10 @@ Global
 		{5AF6816F-0799-429C-8FCD-7C8DB079ECAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AF6816F-0799-429C-8FCD-7C8DB079ECAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AF6816F-0799-429C-8FCD-7C8DB079ECAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0F5F440-8E90-48B4-A9D4-0262A84F63C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0F5F440-8E90-48B4-A9D4-0262A84F63C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0F5F440-8E90-48B4-A9D4-0262A84F63C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0F5F440-8E90-48B4-A9D4-0262A84F63C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +38,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{29D66BCA-A2F5-4F10-8F0E-9624A5C95444} = {545F893D-3465-4084-B634-C2773B32B0F2}
 		{5AF6816F-0799-429C-8FCD-7C8DB079ECAE} = {D6B61568-23BF-4FCA-9A04-7EC863213EC0}
+		{A0F5F440-8E90-48B4-A9D4-0262A84F63C4} = {D6B61568-23BF-4FCA-9A04-7EC863213EC0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5C25DBD9-5160-4608-8E28-C6BEFAED15DB}
