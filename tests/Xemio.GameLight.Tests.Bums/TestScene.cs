@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Windows.Forms;
 using Xemio.GameLight.Game;
 
 namespace Xemio.GameLight.Tests.Bums
@@ -14,6 +15,7 @@ namespace Xemio.GameLight.Tests.Bums
         private SolidBrush _messageBrush;
         private PointF _messageLocation;
         private double _elapsed;
+        private bool _upwards;
 
         public override void LoadContent()
         {
@@ -43,6 +45,8 @@ namespace Xemio.GameLight.Tests.Bums
 
             SizeF messageSize = this.GraphicsDevice.MeasureString(this._message, this._font);
             this._messageLocation = new PointF(this.GraphicsDevice.Width / 2f - messageSize.Width / 2, this.GraphicsDevice.Height / 2f - messageSize.Height / 2);
+            
+            this._upwards = this.InputManager.Keyboard.GotPressed(Keys.W);
         }
 
         public override void Render()
@@ -53,6 +57,11 @@ namespace Xemio.GameLight.Tests.Bums
 
             this.GraphicsDevice.DrawString(this._elapsed.ToString(), this._font, this._messageBrush, new PointF(0, 0));
             this.GraphicsDevice.DrawString(this._message, this._font, this._messageBrush, this._messageLocation);
+
+            if (this._upwards)
+            {
+                this.GraphicsDevice.DrawRectangle(this._linePen, new RectangleF(10, 10, 50, 50));
+            }
         }
     }
 }

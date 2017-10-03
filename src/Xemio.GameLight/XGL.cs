@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Xemio.GameLight.Components;
 using Xemio.GameLight.Game;
+using Xemio.GameLight.Input;
 using Xemio.GameLight.Rendering;
 using Xemio.GameLight.Threading;
 
@@ -64,11 +65,13 @@ namespace Xemio.GameLight
 
             var threadInvoker = new ThreadInvoker(configuration.Control);
             var gameLoop = new GameLoop(configuration.FramesPerSecond, threadInvoker);
+            var inputManager = new InputManager(configuration.Control);
             var renderManager = new RenderManager(configuration.Control, configuration.BackBuffer, configuration.DefaultColor);
             var sceneManager = new SceneManager();
 
             gameLoop.Subscribe(sceneManager);
             gameLoop.Subscribe(renderManager);
+            gameLoop.Subscribe(inputManager);
 
             _components = new List<IComponent>
             {
@@ -76,7 +79,8 @@ namespace Xemio.GameLight
                 renderManager,
                 renderManager.GraphicsDevice,
                 sceneManager,
-                threadInvoker
+                threadInvoker,
+                inputManager,
             };
 
             sceneManager.CurrentScene = configuration.StartScene;

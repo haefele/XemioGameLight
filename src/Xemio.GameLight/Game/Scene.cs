@@ -1,10 +1,12 @@
-﻿using Xemio.GameLight.Rendering;
+﻿using Xemio.GameLight.Input;
+using Xemio.GameLight.Rendering;
 
 namespace Xemio.GameLight.Game
 {
     public abstract class Scene
     {
         public GraphicsDevice GraphicsDevice => XGL.Get<GraphicsDevice>();
+        public InputManager InputManager => XGL.Get<InputManager>();
 
         public bool IsContentLoaded { get; private set; }
 
