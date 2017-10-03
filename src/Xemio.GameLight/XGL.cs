@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Xemio.GameLight.Components;
@@ -11,7 +10,6 @@ namespace Xemio.GameLight
 {
     public static class XGL
     {
-        private static Form _form;
         private static IList<IComponent> _components;
 
         public static T Get<T>() where T : IComponent
@@ -19,23 +17,17 @@ namespace Xemio.GameLight
             return _components.OfType<T>().FirstOrDefault();
         }
 
-        public static bool IsConfigured => _form != null;
+        public static bool IsConfigured { get; private set; }
 
-        public static void Run(Action<XGLConfiguration> configurationAction)
+        public static void CreateWinFormsWindow(Action<XGLConfiguration> configurationAction)
         {
             var configuration = new XGLConfiguration();
             configurationAction(configuration);
-            Run(configuration);
+            CreateWinFormsWindow(configuration);
         }
-
-        public static void Run(XGLConfiguration configuration)
+        public static void CreateWinFormsWindow(XGLConfiguration configuration)
         {
-            if (IsConfigured)
-                return;
-            
-            configuration.Validate();
-
-            _form = new Form
+            var form = new Form
             {
                 Width = configuration.BackBuffer.Width,
                 Height = configuration.BackBuffer.Height,
@@ -44,8 +36,33 @@ namespace Xemio.GameLight
                 ShowIcon = false
             };
 
+            configuration.Control = form;
+
+            Run(configuration);
+
+            Application.Run(form);
+        }
+
+        public static void EmbedInControl(Action<XGLConfiguration> configurationAction)
+        {
+            var configuration = new XGLConfiguration();
+            configurationAction(configuration);
+            EmbedInControl(configuration);
+        }
+        public static void EmbedInControl(XGLConfiguration configuration)
+        {
+            Run(configuration);
+        }
+
+        private static void Run(XGLConfiguration configuration)
+        {
+            if (IsConfigured)
+                return;
+
+            configuration.Validate();
+
             var gameLoop = new GameLoop(configuration.FramesPerSecond);
-            var renderManager = new RenderManager(_form, configuration.BackBuffer, configuration.DefaultColor);
+            var renderManager = new RenderManager(configuration.Control, configuration.BackBuffer, configuration.DefaultColor);
             var sceneManager = new SceneManager();
 
             gameLoop.Subscribe(sceneManager);
@@ -60,27 +77,10 @@ namespace Xemio.GameLight
             };
 
             sceneManager.CurrentScene = configuration.StartScene;
+            
+            IsConfigured = true;
 
             gameLoop.Start();
-
-            Application.Run(_form);
-        }
-    }
-
-    public class XGLConfiguration
-    {
-        public int FramesPerSecond { get; set; }
-        public Size BackBuffer { get; set; }
-        public Scene StartScene { get; set; }
-        public Color DefaultColor { get; set; }
-        public string Title { get; set; }
-
-        public void Validate()
-        {
-            if (this.FramesPerSecond <= 0)
-                throw new Exception();
-            if (this.StartScene == null)
-                throw new Exception();
         }
     }
 }
