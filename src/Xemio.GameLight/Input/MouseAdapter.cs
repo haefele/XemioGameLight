@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Xemio.GameLight.Input
@@ -14,6 +15,11 @@ namespace Xemio.GameLight.Input
             this._backBufferSize = backBufferSize;
 
             control.MouseMove += this.ControlOnMouseMove;
+            control.MouseDown += this.ControlOnMouseDown;
+        }
+
+        private void ControlOnMouseDown(object sender, MouseEventArgs mouseEventArgs)
+        {
         }
 
         public PointF MousePosition { get; private set; }

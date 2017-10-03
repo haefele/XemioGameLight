@@ -18,7 +18,7 @@ namespace Xemio.GameLight.Tests.Bums
 
             XGL.CreateWinFormsWindow(f =>
             {
-                f.StartScene = new InputScene();
+                f.StartScene = new TestScene();
                 f.Title = "Test-Game";
             });
         }

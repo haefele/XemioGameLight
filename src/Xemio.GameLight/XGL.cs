@@ -31,8 +31,7 @@ namespace Xemio.GameLight
         {
             var form = new Form
             {
-                Width = configuration.BackBuffer.Width,
-                Height = configuration.BackBuffer.Height,
+                ClientSize = configuration.BackBuffer,
                 FormBorderStyle = FormBorderStyle.FixedSingle,
                 Text = configuration.Title,
                 ShowIcon = false
