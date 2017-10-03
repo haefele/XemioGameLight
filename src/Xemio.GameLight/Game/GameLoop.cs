@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Xemio.GameLight.Components;
+using Xemio.GameLight.Threading;
 using Timer = System.Threading.Timer;
 
 namespace Xemio.GameLight.Game
@@ -16,6 +17,7 @@ namespace Xemio.GameLight.Game
 
     public class GameLoop : IComponent
     {
+        private readonly ThreadInvoker _threadInvoker;
         private readonly List<IGameLoopSubscriber> _subscribers;
 
         private CancellationTokenSource _tokenSource;
@@ -24,9 +26,11 @@ namespace Xemio.GameLight.Game
         public int FramesPerSecond { get; }
         public bool IsStarted => this._task != null;
 
-        public GameLoop(int framesPerSecond)
+        public GameLoop(int framesPerSecond, ThreadInvoker threadInvoker)
         {
+            this._threadInvoker = threadInvoker;
             this._subscribers = new List<IGameLoopSubscriber>();
+
             this.FramesPerSecond = framesPerSecond;
         }
 
@@ -63,15 +67,18 @@ namespace Xemio.GameLight.Game
                 var elapsed = watch.Elapsed;
                 var elapsedSinceLastTick = elapsed - previousElapsed;
 
-                foreach (var subscriber in this._subscribers)
+                this._threadInvoker.Execute(() =>
                 {
-                    subscriber.Tick(elapsedSinceLastTick.TotalSeconds);
-                }
+                    foreach (var subscriber in this._subscribers)
+                    {
+                        subscriber.Tick(elapsedSinceLastTick.TotalSeconds);
+                    }
 
-                foreach (var subscriber in this._subscribers)
-                {
-                    subscriber.Render();
-                }
+                    foreach (var subscriber in this._subscribers)
+                    {
+                        subscriber.Render();
+                    }
+                });
 
                 previousElapsed = elapsed;
             }

@@ -50,6 +50,7 @@
     <Compile Include="Rendering\Gdi.cs" />
     <Compile Include="Rendering\GraphicsDevice.cs" />
     <Compile Include="Rendering\RenderManager.cs" />
+    <Compile Include="Threading\ThreadInvoker.cs" />
     <Compile Include="XGL.cs" />
     <Compile Include="XGLConfiguration.cs" />
   </ItemGroup>
