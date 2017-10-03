@@ -19,7 +19,7 @@ namespace Xemio.GameLight.Tests.Bums
             XGL.EmbedInControl(f =>
             {
                 f.Control = this.panel1;
-                f.StartScene = new TestScene();
+                f.StartScene = new InputScene();
             });
         }
     }

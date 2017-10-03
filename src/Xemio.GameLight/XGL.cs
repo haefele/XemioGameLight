@@ -65,7 +65,7 @@ namespace Xemio.GameLight
 
             var threadInvoker = new ThreadInvoker(configuration.Control);
             var gameLoop = new GameLoop(configuration.FramesPerSecond, threadInvoker);
-            var inputManager = new InputManager(configuration.Control);
+            var inputManager = new InputManager(configuration.Control, configuration.BackBuffer);
             var renderManager = new RenderManager(configuration.Control, configuration.BackBuffer, configuration.DefaultColor);
             var sceneManager = new SceneManager();
 
