@@ -1,20 +1,14 @@
-using System.Collections.Concurrent;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace Xemio.GameLight.Input
 {
     public class KeyboardAdapter
     {
-        private readonly ConcurrentDictionary<Keys, KeyboardState> _currentKeyboardStates;
-        private readonly ConcurrentDictionary<Keys, KeyboardState> _previousKeyboardStates;
-        private readonly ReaderWriterLockSlim _pushCurrentToPreviousLock;
+        private readonly HistoryDictionary<Keys, KeyboardState> _keyboardStates;
 
         public KeyboardAdapter(Control control)
         {
-            this._currentKeyboardStates = new ConcurrentDictionary<Keys, KeyboardState>();
-            this._previousKeyboardStates = new ConcurrentDictionary<Keys, KeyboardState>();
-            this._pushCurrentToPreviousLock = new ReaderWriterLockSlim();
+            this._keyboardStates = new HistoryDictionary<Keys, KeyboardState>();
 
             control.KeyDown += this.ControlOnKeyDown;
             control.KeyUp += this.ControlOnKeyUp;
@@ -55,65 +49,35 @@ namespace Xemio.GameLight.Input
 
         public KeyboardState GetPrevious(Keys key)
         {
-            this._pushCurrentToPreviousLock.EnterReadLock();
+            if (this._keyboardStates.TryGetPrevious(key, out var state))
+                return state;
 
-            try
-            {
-                if (this._previousKeyboardStates.TryGetValue(key, out var state))
-                    return state;
-
-                return new KeyboardState(key, false);
-            }
-            finally
-            {
-                this._pushCurrentToPreviousLock.ExitReadLock();
-            }
+            return new KeyboardState(key, false);
         }
 
         public KeyboardState GetCurrent(Keys key)
         {
-            this._pushCurrentToPreviousLock.EnterReadLock();
+            if (this._keyboardStates.TryGetCurrent(key, out var state))
+                return state;
 
-            try
-            {
-                if (this._currentKeyboardStates.TryGetValue(key, out var state))
-                    return state;
-
-                return new KeyboardState(key, false);
-            }
-            finally
-            {
-                this._pushCurrentToPreviousLock.ExitReadLock();
-            }
+            return new KeyboardState(key, false);
         }
 
         private void ControlOnKeyUp(object sender, KeyEventArgs keyEventArgs)
         {
             var state = new KeyboardState(keyEventArgs.KeyCode, false);
-            this._currentKeyboardStates.AddOrUpdate(state.Key, state, (_, __) => state);
+            this._keyboardStates.SetCurrent(state.Key, state);
         }
 
         private void ControlOnKeyDown(object sender, KeyEventArgs keyEventArgs)
         {
             var state = new KeyboardState(keyEventArgs.KeyCode, true);
-            this._currentKeyboardStates.AddOrUpdate(state.Key, state, (_, __) => state);
+            this._keyboardStates.SetCurrent(state.Key, state);
         }
 
         internal void PushCurrentToPrevious()
         {
-            this._pushCurrentToPreviousLock.EnterWriteLock();
-            try
-            {
-                this._previousKeyboardStates.Clear();
-                foreach (var pair in this._currentKeyboardStates)
-                {
-                    this._previousKeyboardStates[pair.Key] = pair.Value;
-                }
-            }
-            finally
-            {
-                this._pushCurrentToPreviousLock.ExitWriteLock();
-            }
+            this._keyboardStates.PushCurrentToPrevious();
         }
     }
 }

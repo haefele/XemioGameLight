@@ -59,7 +59,8 @@ namespace Xemio.GameLight.Tests.Bums
 
             //this._currentLocation = new PointF(this._currentLocation.X + xMovement, this._currentLocation.Y + yMovement);
 
-            this._currentLocation = this.InputManager.Mouse.MousePosition;
+            if (this.InputManager.Mouse.GotPressed(MouseButtons.XButton2))
+                this._currentLocation = this.InputManager.Mouse.MousePosition;
         }
 
         public override void Render()

@@ -20,6 +20,7 @@ namespace Xemio.GameLight.Input
         public void Tick(double elapsed)
         {
             this.Keyboard.PushCurrentToPrevious();
+            this.Mouse.PushCurrentToPrevious();
         }
 
         public void Render()
