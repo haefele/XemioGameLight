@@ -16,7 +16,17 @@ namespace Xemio.GameLight.Threading
         public void Execute(Action action)
         {
             if (this._control.InvokeRequired)
-                this._control.Invoke(action);
+            {
+                try
+                {
+                    this._control.Invoke(action);
+                }
+                catch (ObjectDisposedException)
+                {
+                }
+            }
+            
+            action();
         }
     }
 }
