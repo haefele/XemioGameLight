@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Xemio.GameLight.Components;
 using Xemio.GameLight.Game;
+using Xemio.GameLight.Game.Randomization;
 using Xemio.GameLight.Input;
 using Xemio.GameLight.Rendering;
 using Xemio.GameLight.Threading;
@@ -34,12 +36,27 @@ namespace Xemio.GameLight
                 ClientSize = configuration.BackBuffer,
                 FormBorderStyle = FormBorderStyle.FixedSingle,
                 Text = configuration.Title,
-                ShowIcon = false
+                ShowIcon = false,
+                KeyPreview = true,
             };
-
-            configuration.Control = form;
+            var panel = new Panel
+            {
+                Anchor = AnchorStyles.Left | AnchorStyles.Top| AnchorStyles.Right| AnchorStyles.Bottom,
+                Margin = new Padding(0),
+                Width = configuration.BackBuffer.Width,
+                Height = configuration.BackBuffer.Height
+            };
+            form.Controls.Add(panel);
+            form.Activated += (s, e) =>
+            {
+                panel.Focus();
+            };
+            
+            configuration.Control = panel;
 
             Run(configuration);
+
+            Cursor.Hide();
 
             Application.Run(form);
         }
@@ -72,7 +89,7 @@ namespace Xemio.GameLight
             gameLoop.Subscribe(renderManager);
             gameLoop.Subscribe(inputManager);
 
-            _components = new List<IComponent>
+            _components = new List<IComponent>(configuration.Components)
             {
                 gameLoop,
                 renderManager,
@@ -80,6 +97,7 @@ namespace Xemio.GameLight
                 sceneManager,
                 threadInvoker,
                 inputManager,
+                new LocalRandom(),
             };
 
             sceneManager.CurrentScene = configuration.StartScene;

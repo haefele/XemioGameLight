@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using Xemio.GameLight.Components;
@@ -23,12 +24,27 @@ namespace Xemio.GameLight.Rendering
             this.Bitmap = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
 
             this.BackBuffer = Graphics.FromImage(this.Bitmap);
-            this.BackBuffer.InterpolationMode = InterpolationMode.NearestNeighbor;
+            this.BackBuffer.InterpolationMode = InterpolationMode.Default;
             this.BackBuffer.PixelOffsetMode = PixelOffsetMode.HighQuality;
-            this.BackBuffer.SmoothingMode = SmoothingMode.HighSpeed;
+            this.BackBuffer.SmoothingMode = SmoothingMode.AntiAlias;
             this.BackBuffer.CompositingQuality = CompositingQuality.AssumeLinear;
 
             this.Clear();
+        }
+
+        public RectangleF GetScreenRectangle()
+        {
+            return new RectangleF(0, 0, this.Width, this.Height);
+        }
+
+        public PointF GetScreenCenter()
+        {
+            return new PointF(this.Width / 2, this.Height / 2);
+        }
+
+        public PointF GetScreenCenterFor(SizeF size)
+        {
+            return this.GetScreenCenter() - new SizeF(size.Width / 2, size.Height / 2);
         }
 
         public void DrawLine(Pen pen, PointF pt1, PointF pt2)
@@ -84,6 +100,11 @@ namespace Xemio.GameLight.Rendering
         public void DrawImage(Image image, RectangleF rect)
         {
             this.BackBuffer.DrawImage(image, rect);
+        }
+
+        public void DrawImage(Image image, RectangleF rect, RectangleF sourceRect)
+        {
+            this.BackBuffer.DrawImage(image, rect, sourceRect, GraphicsUnit.Pixel);
         }
 
         public void Clear()

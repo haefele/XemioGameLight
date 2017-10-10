@@ -30,37 +30,37 @@ namespace Xemio.GameLight.Tests.Bums
         {
             base.Tick(elapsed);
 
-            //PointF direction = new PointF(0, 0);
+            PointF direction = new PointF(0, 0);
 
-            //if (this.InputManager.Keyboard.IsPressed(Keys.W))
-            //{
-            //    direction = new PointF(direction.X, direction.Y - 1);
-            //}
+            if (this.InputManager.Keyboard.IsPressed(Keys.W))
+            {
+                direction = new PointF(direction.X, direction.Y - 1);
+            }
 
-            //if (this.InputManager.Keyboard.IsPressed(Keys.A))
-            //{
-            //    direction = new PointF(direction.X - 1, direction.Y);
-            //}
+            if (this.InputManager.Keyboard.IsPressed(Keys.A))
+            {
+                direction = new PointF(direction.X - 1, direction.Y);
+            }
 
-            //if (this.InputManager.Keyboard.IsPressed(Keys.S))
-            //{
-            //    direction = new PointF(direction.X, direction.Y + 1);
-            //}
+            if (this.InputManager.Keyboard.IsPressed(Keys.S))
+            {
+                direction = new PointF(direction.X, direction.Y + 1);
+            }
 
-            //if (this.InputManager.Keyboard.IsPressed(Keys.D))
-            //{
-            //    direction = new PointF(direction.X + 1, direction.Y);
-            //}
+            if (this.InputManager.Keyboard.IsPressed(Keys.D))
+            {
+                direction = new PointF(direction.X + 1, direction.Y);
+            }
 
-            //float speed = 200;
+            float speed = 200;
 
-            //var xMovement = (direction.X * (float)elapsed * speed);
-            //var yMovement = (direction.Y * (float)elapsed * speed);
+            var xMovement = (direction.X * (float)elapsed * speed);
+            var yMovement = (direction.Y * (float)elapsed * speed);
 
-            //this._currentLocation = new PointF(this._currentLocation.X + xMovement, this._currentLocation.Y + yMovement);
+            this._currentLocation = new PointF(this._currentLocation.X + xMovement, this._currentLocation.Y + yMovement);
 
-            if (this.InputManager.Mouse.GotPressed(MouseButtons.XButton2))
-                this._currentLocation = this.InputManager.Mouse.MousePosition;
+            //if (this.InputManager.Mouse.GotPressed(MouseButtons.XButton2))
+            //    this._currentLocation = this.InputManager.Mouse.MousePosition;
         }
 
         public override void Render()

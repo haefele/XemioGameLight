@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using Xemio.GameLight.Components;
 using Xemio.GameLight.Game;
 
 namespace Xemio.GameLight
@@ -13,9 +15,11 @@ namespace Xemio.GameLight
         public Color DefaultColor { get; set; }
         public string Title { get; set; }
         public Control Control { get; set; }
+        public List<IComponent> Components { get; }
 
         public XGLConfiguration()
         {
+            this.Components = new List<IComponent>();
             this.FramesPerSecond = 60;
             this.BackBuffer = new Size(1280, 720);
             this.DefaultColor = Color.CornflowerBlue;

@@ -14,13 +14,13 @@ namespace Xemio.GameLight.Tests.Bums
         [STAThread]
         static void Main()
         {
-            //Application.Run(new EmbeddedTestForm());
+            Application.Run(new EmbeddedTestForm());
 
-            XGL.CreateWinFormsWindow(f =>
-            {
-                f.StartScene = new InputScene();
-                f.Title = "Test-Game";
-            });
+            //XGL.CreateWinFormsWindow(f =>
+            //{
+            //    f.StartScene = new InputScene();
+            //    f.Title = "Test-Game";
+            //});
         }
     }
 }

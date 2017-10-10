@@ -21,6 +21,15 @@ namespace Xemio.GameLight.Tests.Bums
                 f.Control = this.panel1;
                 f.StartScene = new InputScene();
             });
+            this.Activated += (s, e) =>
+            {
+
+                this.panel1.Focus();
+            };
+        }
+
+        private void panel1_MouseDown(object sender, MouseEventArgs e)
+        {
         }
     }
 }

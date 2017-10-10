@@ -66,7 +66,7 @@ namespace Xemio.GameLight.Game
 
                 var elapsed = watch.Elapsed;
                 var elapsedSinceLastTick = elapsed - previousElapsed;
-
+                
                 this._threadInvoker.Execute(() =>
                 {
                     foreach (var subscriber in this._subscribers)
