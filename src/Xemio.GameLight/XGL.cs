@@ -51,6 +51,13 @@ namespace Xemio.GameLight
             {
                 panel.Focus();
             };
+            form.MouseEnter += (s, e) =>
+            {
+                form.Invoke(new Action(() =>
+                {
+                    Cursor.Clip = form.Bounds;
+                }));
+            };
             
             configuration.Control = panel;
 
